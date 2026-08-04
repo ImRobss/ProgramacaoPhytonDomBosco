@@ -5,7 +5,7 @@ def calcular_bhaskara(a, b, c):
     delta = (b ** 2) - (4 * a * c)
 
     if delta < 0:
-        return ("sem_raiz", None)
+        return ("sem_raiz", "Não existem raízes reais.")
 
     if delta == 0:
         x = round(-b / (2 * a), 2)
@@ -28,7 +28,7 @@ def main():
     if caso == "erro":
         print(resultado)
     elif caso == "sem_raiz":
-        print("Não existem raízes reais.")
+        print(resultado)
     elif caso == "uma_raiz":
         print(f"A equação possui uma raiz real: x = {resultado}")
     else:
