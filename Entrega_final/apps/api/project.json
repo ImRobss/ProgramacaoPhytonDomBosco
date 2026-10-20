@@ -1,0 +1,64 @@
+{
+  "name": "@entrega-final/api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/api/app",
+  "tags": ["lang:python"],
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": ["{projectRoot}/pyproject.toml", "{projectRoot}/uv.lock"],
+      "cache": false
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["install"],
+      "continuous": true,
+      "options": {
+        "command": "uv run uvicorn app.main:app --reload --port 8000",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["install"],
+      "continuous": true,
+      "options": {
+        "command": "uv run uvicorn app.main:app --host 0.0.0.0 --port 8000",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["install"],
+      "options": {
+        "command": "uv run pytest",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": ["{projectRoot}/**/*.py", "{projectRoot}/pyproject.toml"],
+      "cache": true
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["install"],
+      "options": {
+        "command": "uv run ruff check . && uv run ruff format --check .",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": ["{projectRoot}/**/*.py", "{projectRoot}/pyproject.toml"],
+      "cache": true
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["install"],
+      "options": {
+        "command": "uv run ruff check --fix . && uv run ruff format .",
+        "cwd": "{projectRoot}"
+      }
+    }
+  }
+}
