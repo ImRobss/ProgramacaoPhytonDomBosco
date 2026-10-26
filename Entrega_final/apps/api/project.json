@@ -32,6 +32,24 @@
         "cwd": "{projectRoot}"
       }
     },
+    "migrate": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["install"],
+      "options": {
+        "command": "uv run alembic upgrade head",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "seed": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["install"],
+      "options": {
+        "command": "uv run python -m app.seed",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
     "test": {
       "executor": "nx:run-commands",
       "dependsOn": ["install"],
