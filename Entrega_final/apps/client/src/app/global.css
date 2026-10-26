@@ -1,8 +1,65 @@
-html {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.5;
+@import 'tailwindcss';
+
+/*
+ * Controles nativos (campos, checkbox, barras de rolagem do sistema) seguem o tema.
+ * As cores da barra ficam em hex, e não nas variáveis do Tailwind (--color-zinc-*):
+ * o Tailwind 4 usa lab()/oklch(), e o Chromium não pinta a barra de rolagem com essas cores.
+ */
+:root {
+  color-scheme: light dark;
+  --rolagem-polegar: #d4d4d8; /* zinc-300 */
+  --rolagem-polegar-hover: #a1a1aa; /* zinc-400 */
 }
 
-body {
-  margin: 0;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rolagem-polegar: #3f3f46; /* zinc-700 */
+    --rolagem-polegar-hover: #71717a; /* zinc-500 */
+  }
+}
+
+/*
+ * Barra de rolagem fina e discreta, nas cores do painel.
+ * Chrome, Edge e Safari usam as regras ::-webkit-scrollbar, que dão controle total do desenho.
+ * Quando scrollbar-color está definido, o Chromium ignora essas regras e volta a desenhar a
+ * barra do Windows, por isso as propriedades padrão ficam só para o Firefox.
+ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--rolagem-polegar) padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rolagem-polegar-hover) padding-box;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rolagem-polegar) transparent;
+  }
+}
+
+/* Listas flutuantes (dropdowns): barra mais fina e afastada das bordas arredondadas */
+.rolagem-flutuante::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rolagem-flutuante::-webkit-scrollbar-track {
+  margin: 6px 0;
 }
