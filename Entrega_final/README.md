@@ -18,6 +18,8 @@ Projeto final da disciplina de Programação em Python. Monorepo [Nx](https://nx
 cp apps/api/.env.example apps/api/.env   # configuração da API
 pnpm install          # dependências JS
 pnpm nx install @entrega-final/api   # dependências Python (uv sync)
+pnpm nx migrate @entrega-final/api   # cria as tabelas (precisa do Postgres do DATABASE_URL)
+pnpm nx seed @entrega-final/api      # carrega as 9 áreas de apps/api/seeds/areas.json
 pnpm dev              # sobe client e api juntos
 ```
 
@@ -32,6 +34,10 @@ O client consulta `GET /health` da API e mostra se ela está online. A URL da AP
 | `pnpm lint` | lint (ESLint no client, Ruff na API) |
 | `pnpm build` | build de produção do client |
 | `pnpm nx dev @entrega-final/api` | roda só a API |
+| `pnpm nx migrate @entrega-final/api` | aplica as migrations do Alembic (`alembic upgrade head`) |
+| `pnpm nx seed @entrega-final/api` | carrega as áreas no banco (pode rodar mais de uma vez) |
+| `uv run python -m app.scraper.exportar ../client/src/data/vagas.json` (em `apps/api`) | busca as vagas no LinkedIn, classifica e baixa a descrição de cada uma para o painel do client |
+| `uv run python -m app.scraper.exportar ../client/src/data/vagas.json --so-detalhes` (em `apps/api`) | só completa as descrições que faltam, sem refazer a busca (use depois de um 429) |
 | `pnpm nx format @entrega-final/api` | formata o código Python com Ruff |
 | `pnpm nx graph` | mostra o grafo de projetos |
 
@@ -44,9 +50,12 @@ apps/
 │   └── specs/       # testes Jest
 └── api/             # FastAPI
     ├── app/main.py  # aplicação e rotas
+    ├── app/models.py # tabelas do SQLAlchemy
+    ├── migrations/  # migrations do Alembic
+    ├── seeds/       # dados iniciais (areas.json)
     ├── tests/       # testes pytest
     ├── pyproject.toml
-    └── project.json # targets Nx (install, dev, start, test, lint, format)
+    └── project.json # targets Nx (install, dev, start, migrate, seed, test, lint, format)
 ```
 
 A API não tem plugin Nx próprio: os targets em `apps/api/project.json` usam `nx:run-commands` para chamar o `uv`. Assim, o Nx orquestra e faz cache dos testes e do lint do Python, como já faz com o client.
